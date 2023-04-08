@@ -1,0 +1,54 @@
+{{template "header.html" .}}
+<section class="section">
+  <div class="columns">
+    <div class="column"></div>
+    <div class="column is-one-third">
+
+      <form action="/signin" method="post">
+        <div class="container" style="border: 1px solid lightgray; border-radius: 3px;padding: 15px;">
+          {{if .cadastrado}}
+          <div class="notification is-success">
+            {{.cadastrado}}
+          </div>
+          {{end}}
+
+          <div class="field">
+            <label class="label">Nome</label>
+            <div class="control">
+              <input class="input" type="text" placeholder="Enter Username" name="username" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">CPF</label>
+            <div class="control">
+              <input class="input" type="text" placeholder="CPF" name="cpf" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Data Nascimento</label>
+            <div class="control">
+              <input class="input" type="text" placeholder="Data Nascimento" name="datanascimento" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Nome Completo</label>
+            <div class="control">
+              <input class="input" type="text" placeholder="Nome Completo" name="nomecompleto" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Senha</label>
+            <div class="control">
+              <input class="input" type="password" placeholder="Enter Password" name="password" required>
+            </div>
+          </div>
+          <div class="field">
+            <button class="button is-link">Cadastrar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="column"></div>
+  </div>
+</section>
+{{template "footer.html"}}

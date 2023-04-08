@@ -1,0 +1,26 @@
+<!-- templates/dashboard.html -->
+
+{{template "header.html" .}}
+<section class="section">
+  <div class="container">
+    <h1 class="title">
+      Dashboard
+    </h1>
+    {{if .responsebateponto}}
+    <div class="notification is-success">
+      {{.responsebateponto}}
+    </div>
+    {{end}}
+
+    <div class="columns">
+      <div class="column is-one-third">{{template "menu.html" .}}</div>
+      <div class="column is-two-thirds">
+        <p style="background-color: whitesmoke; padding: 10px;">{{.texto}}</p>
+        <p style="background-color: whitesmoke; padding: 10px;">{{.bianca}}</p>
+        <p style="background-color: whitesmoke; padding: 10px;">{{.danilo}}</p>
+        <p style="background-color: whitesmoke; padding: 10px;">{{.paty}}</p>
+      </div>
+    </div>
+  </div>
+</section>
+{{template "footer.html"}}

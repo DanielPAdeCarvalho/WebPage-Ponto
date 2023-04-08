@@ -1,0 +1,33 @@
+{{template "header.html" .}}
+<section class="section">
+  <div class="container">
+    <h1 class="title">
+      Deli da Persy, Ponto Funcionarios
+    </h1>
+    {{if .user}}
+    <div class="buttons">
+      <a class="button is-primary" href="/dashboard">
+        <strong>{{.user}}</strong>
+      </a>
+      <script>
+        function clearCookie() {
+          document.cookie = "session" + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        }                       
+      </script>
+      <a class="button" href="/logout" onclick="clearCookie()">
+        Log out
+      </a>
+    </div>
+    {{else}}
+    <p class="subtitle">
+      Essa pagina não faz nada, faça o <strong>Login</strong> primeiro !
+    </p>
+    <div class="buttons">
+      <a class="button is-primary" href="/login">
+        <strong>Log in</strong>
+      </a>
+    </div>
+    {{end}}
+  </div>
+</section>
+{{template "footer.html"}}
