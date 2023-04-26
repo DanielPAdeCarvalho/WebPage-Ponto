@@ -121,6 +121,7 @@ func UltimosPontos() []globals.Ponto {
 		return []globals.Ponto{}
 	}
 	req.Header.Set("Content-Type", "application/json")
+
 	// send the request
 	client := http.DefaultClient
 	resp, err := client.Do(req)
@@ -129,16 +130,19 @@ func UltimosPontos() []globals.Ponto {
 		return []globals.Ponto{}
 	}
 	defer resp.Body.Close()
+
+	// read the response body and close it as well
 	body := bufio.NewScanner(resp.Body)
 	var buffer []byte
 	for body.Scan() {
 		buffer = append(buffer, body.Bytes()...)
 	}
-	data := make([]globals.Ponto, 3)
-	err = json.Unmarshal(buffer, &data)
+	pontos := make([]globals.Ponto, 3)
+	err = json.Unmarshal(buffer, &pontos)
+
 	if err != nil {
 		log.Println("1025-Error unmarhal request:", err)
 		return []globals.Ponto{}
 	}
-	return data
+	return pontos
 }

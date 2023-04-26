@@ -102,11 +102,11 @@ func DashboardGetHandler(batePonto bool) gin.HandlerFunc {
 			responseBatePonto = "Ponto Batido com Sucesso."
 		}
 		pontos := helpers.UltimosPontos()
-		t, _ := time.Parse("06-01-02_15:04", pontos[0].Data)
+		t, _ := time.Parse("2006-01-02_15:04:05", pontos[0].Data)
 		bianca := "Bianca: " + t.Format("02/01/2006 - 15:04")
-		t, _ = time.Parse("06-01-02_15:04", pontos[1].Data)
+		t, _ = time.Parse("2006-01-02_15:04:05", pontos[1].Data)
 		danilo := "Danilo: " + t.Format("02/01/2006 - 15:04")
-		t, _ = time.Parse("06-01-02_15:04", pontos[2].Data)
+		t, _ = time.Parse("2006-01-02_15:04:05", pontos[2].Data)
 		paty := "Patrícia: " + t.Format("02/01/2006 - 15:04")
 		c.HTML(http.StatusOK, "dashboard.html", gin.H{
 			"texto":             texto,
