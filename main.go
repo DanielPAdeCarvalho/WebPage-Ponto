@@ -11,19 +11,23 @@ import (
 )
 
 func main() {
+	// Set the router as the default one shipped with Gin
+	gin.SetMode(gin.TestMode)
 	router := gin.New()
 
+	router.Use(sessions.Sessions("session", cookie.NewStore(globals.Secret)))
 	router.Static("/assets", "./assets")
 	router.LoadHTMLGlob("templates/*.html")
-
-	router.Use(sessions.Sessions("session", cookie.NewStore(globals.Secret)))
 
 	public := router.Group("/")
 	routes.PublicRoutes(public)
 
 	private := router.Group("/")
+
+	// Additional configs for the gin sessions middleware and the AuthRequired middleware
 	private.Use(middleware.AuthRequired)
 	routes.PrivateRoutes(private)
+	router.SetTrustedProxies(nil)
 
 	router.Run(":8080")
 }
