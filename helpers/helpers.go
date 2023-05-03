@@ -3,12 +3,34 @@ package helpers
 import (
 	"bufio"
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"log"
+	"loginpage/certificate"
 	"loginpage/globals"
 	"net/http"
 	"strings"
 )
+
+// Create a custom HTTP client with a custom Transport object
+func customHTTPClient() *http.Client {
+	// Create a certificate pool
+	certPool := x509.NewCertPool()
+
+	// Add the client certificate to the certificate pool
+	if ok := certPool.AppendCertsFromPEM([]byte(certificate.ClientCertificate)); !ok {
+		log.Fatalf("Failed to add client certificate to certificate pool")
+	}
+
+	// Configure the custom HTTP client with the certificate pool
+	tlsConfig := &tls.Config{
+		RootCAs:            certPool,
+		InsecureSkipVerify: true,
+	}
+	transport := &http.Transport{TLSClientConfig: tlsConfig}
+	return &http.Client{Transport: transport}
+}
 
 // Manda o Usuario para validar na API de LOGON
 func CheckUserPass(username, password string) bool {
@@ -17,25 +39,26 @@ func CheckUserPass(username, password string) bool {
 		"senha": password,
 	}
 
-	//Marshal the Json data to bytes
+	// Marshal the JSON data to bytes
 	requestDataBytes, err := json.Marshal(requestData)
 	if err != nil {
 		log.Println(err)
 		return false
 	}
 
-	// create a new http request la para a api de logon
-	requestBody, err := http.NewRequest("POST", "http://srcdymw896.execute-api.us-east-1.amazonaws.com/api-login/logon", bytes.NewBuffer(requestDataBytes))
+	// Create a new HTTP request to the API
+	requestBody, err := http.NewRequest("POST", certificate.URLAPILogon, bytes.NewBuffer(requestDataBytes))
 	if err != nil {
 		log.Println(err)
 		return false
 	}
 
-	//set the Content-Type header to application/json
+	// Set the Content-Type header to application/json
 	requestBody.Header.Set("Content-Type", "application/json")
 
-	//send the request using the default Http Client
-	resp, err := http.DefaultClient.Do(requestBody)
+	// Send the request using the custom HTTP client
+	customClient := customHTTPClient()
+	resp, err := customClient.Do(requestBody)
 	if err != nil {
 		log.Println(err)
 		return false
@@ -74,8 +97,7 @@ func Cadastro(nome, cpf, datanascimento, nomecompleto, password string) {
 	}
 
 	// create a POST request with the JSON payload
-	url := "http://srcdymw896.execute-api.us-east-1.amazonaws.com/api-login/signin"
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(colaboradorJ))
+	req, err := http.NewRequest("POST", certificate.URLAPISignin, bytes.NewBuffer(colaboradorJ))
 	if err != nil {
 		log.Println("Error creating request:", err)
 		return
@@ -83,7 +105,7 @@ func Cadastro(nome, cpf, datanascimento, nomecompleto, password string) {
 	req.Header.Set("Content-Type", "application/json")
 
 	// send the request and print the response
-	client := http.DefaultClient
+	client := customHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println("Error sending request:", err)
@@ -94,7 +116,7 @@ func Cadastro(nome, cpf, datanascimento, nomecompleto, password string) {
 
 func BatePonto(nome string) {
 	body := []byte(``)
-	url := "http://vqief2ixwg.execute-api.us-east-1.amazonaws.com/api-ponto/ponto/" + nome
+	url := certificate.URLAPIPonto + nome
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
 	if err != nil {
 		log.Println("Error creating request:", err)
@@ -103,7 +125,7 @@ func BatePonto(nome string) {
 	req.Header.Set("Content-Type", "application/json")
 
 	// send the request
-	client := http.DefaultClient
+	client := customHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println("Error sending request:", err)
@@ -114,8 +136,7 @@ func BatePonto(nome string) {
 
 // Pegar os ultimos pontos
 func UltimosPontos() []globals.Ponto {
-	url := "http://vqief2ixwg.execute-api.us-east-1.amazonaws.com/api-ponto/pontos"
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", certificate.URLAPIPontos, nil)
 	if err != nil {
 		log.Println("Error creating request:", err)
 		return []globals.Ponto{}
@@ -123,7 +144,7 @@ func UltimosPontos() []globals.Ponto {
 	req.Header.Set("Content-Type", "application/json")
 
 	// send the request
-	client := http.DefaultClient
+	client := customHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println("Error sending request:", err)

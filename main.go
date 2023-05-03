@@ -12,7 +12,7 @@ import (
 
 func main() {
 	// Set the router as the default one shipped with Gin
-	gin.SetMode(gin.TestMode)
+	gin.SetMode(gin.DebugMode)
 	router := gin.New()
 
 	router.Use(sessions.Sessions("session", cookie.NewStore(globals.Secret)))
