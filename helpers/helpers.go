@@ -26,7 +26,7 @@ func customHTTPClient() *http.Client {
 	// Configure the custom HTTP client with the certificate pool
 	tlsConfig := &tls.Config{
 		RootCAs:            certPool,
-		InsecureSkipVerify: true,
+		InsecureSkipVerify: true, //security will be made via client authentication token
 	}
 	transport := &http.Transport{TLSClientConfig: tlsConfig}
 	return &http.Client{Transport: transport}
